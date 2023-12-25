@@ -1,14 +1,16 @@
 <template>
-<div id="app">
-  <h1>To-Do List</h1>
-  <ul>
-    <li>
-      <to-do-item label= "Haha" :done="false"></to-do-item>
-    </li>
-  </ul>
-</div>
-</template>
-
+  <div id="app">
+    <h1>To-Do List</h1>
+    <ul>
+      <li>
+        <to-do-item label= "One" :done="false"></to-do-item>
+      </li>
+      <li>
+        <to-do-item label= "Two" :done="false"></to-do-item>
+      </li>
+    </ul>
+  </div>
+  </template>
 <script>
 import ToDoItem from "./components/ToDoItem.vue";
 
