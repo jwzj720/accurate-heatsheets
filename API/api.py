@@ -4,8 +4,8 @@ import textract
 app = Flask(__name__)
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in {'pdf'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf'} # ensures the file is actually a .pdf file
+    # TODO: make sure that we check the file isn't too large, malicious, etc.
 
 @app.route('/upload', methods=['POST'])
 def upload_pdf():
