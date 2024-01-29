@@ -5,11 +5,11 @@ import requests
 from typing import Dict, List
 import logging 
 
-# Load environment variables from .env file
+# Load the environment variables from .env file
 load_dotenv('/home/wjones/CC/Capstone/tbd2/LACCTiC/.env', override=True)
 logging.basicConfig(filename='db_insert.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-# Get database credentials from environment variables
+# Get the database credentials from environment variables
 db_name = os.getenv('DB_NAME')
 db_user = os.getenv('DB_USER')
 db_password = os.getenv('DB_PASS')
