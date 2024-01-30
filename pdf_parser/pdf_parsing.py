@@ -1,13 +1,8 @@
 from PyPDF2 import PdfReader 
-from text_cleaning_tools import *
+from pdf_parser.text_cleaning_tools import *
 import os
 import re
 import json
-
-
-FILE_TO_PARSE = "BrianC.pdf"
-
-file = os.path.join(os.path.abspath('.'), f'heat_sheets\{FILE_TO_PARSE}')
 
 def extract_text_from_pdf(file):
     reader = PdfReader(file) 
@@ -30,7 +25,7 @@ def extract_events_from_text(text):
     # add events to dictionary
     #TODO there should probably be a "runners" field of each event
     events = []
-    event_matches = event_pattern.findall(cleaned_text)
+    event_matches = event_pattern.findall(text)
     for match in event_matches:
         events.append({
             "event_number": match[1],
@@ -122,23 +117,20 @@ def extract_runners_from_text(events,split_string):
         event_count+=1
     return events
 
-def save_events_to_json(data_list, filename):
-    with open(filename, 'w') as json_file:
-        json.dump(data_list, json_file,indent=2)
+def extract_json_from_heat_sheet(heat_sheet_pdf_filename):
+    # Extract text 
+    raw_text = extract_text_from_pdf(heat_sheet_pdf_filename)
+    # cleaning functions
+    cleaned_text = remove_redudant_spaces(raw_text)
+    cleaned_text = add_newline_after_number(cleaned_text)
+    cleaned_text = add_newline_before_keyword(["Event","Yr"], cleaned_text) # Fix instances of [word]Event or [word]Yr
+    # Extract events and event location in the text from text
+    events,split_points = extract_events_from_text(cleaned_text)
+    # Split the full text by events
+    split_string = split_text_at_ranges(cleaned_text,split_points)
+    # extract runners from text and add to events
+    events_with_runners = extract_runners_from_text(events,split_string)
 
+    return(events_with_runners)
 
-# Extract text 
-raw_text = extract_text_from_pdf(file)
-# cleaning functions
-cleaned_text = remove_redudant_spaces(raw_text)
-cleaned_text = add_newline_after_number(cleaned_text)
-cleaned_text = add_newline_before_keyword(["Event","Yr"], cleaned_text) # Fix instances of [word]Event or [word]Yr
-# Extract events and event location in the text from text
-events,split_points = extract_events_from_text(cleaned_text)
-# Split the full text by events
-split_string = split_text_at_ranges(cleaned_text,split_points)
-# extract runners from text and add to events
-events_with_runners = extract_runners_from_text(events,split_string)
-
-save_events_to_json(events,"test_results.json")
 
