@@ -147,9 +147,8 @@ class db_query:
                 JOIN
                     Teams t ON rn.team_id = t.team_id
                 WHERE 
+                    rn.firstname = %s AND rn.lastname = %s AND 
                     t.name = %s AND
-                    rn.firstname = %s AND 
-                    rn.lastname = %s AND 
                     EXTRACT(YEAR FROM r.date) = %s AND
                     (
                         r.section LIKE %s OR
