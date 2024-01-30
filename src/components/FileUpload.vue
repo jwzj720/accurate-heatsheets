@@ -23,15 +23,15 @@
         let formData = new FormData();
         formData.append('file', this.selectedFile);
   
-        axios.post('http://your-api-url.com/upload', formData, {
+        axios.post('http://127.0.0.1:8081/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         }).then(() => {
-          console.log('SUCCESS!!');
+          console.log('SUCCESS!');
         })
         .catch(() => {
-          console.log('FAILURE!!');
+          console.log('FAILURE!');
         });
       }
     }

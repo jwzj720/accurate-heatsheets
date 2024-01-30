@@ -1,13 +1,17 @@
 from flask import Flask, request, jsonify
 import textract
+from flask_cors import CORS, cross_origin
+
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080"}})
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf'} # ensures the file is actually a .pdf file
     # TODO: make sure that we check the file isn't too large, malicious, etc.
 
 @app.route('/upload', methods=['POST'])
+@cross_origin()
 def upload_pdf():
     if 'file' not in request.files:
         return jsonify({'error': 'No file uploaded'}), 400
@@ -23,13 +27,5 @@ def upload_pdf():
     else:
         return jsonify({'error': 'Invalid file format'}), 400
 
-@app.route('/pdf_contents', methods=['GET'])
-def get_pdf_contents():
-    # Read the PDF file and extract its contents
-    text = textract.process('file.pdf').decode('utf-8')
-
-    # Return the contents in JSON format
-    return jsonify({'contents': text}), 200
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8081)
