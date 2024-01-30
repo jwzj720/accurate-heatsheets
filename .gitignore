@@ -1,3 +1,5 @@
+__pycache__
+app_settings.py
 .DS_Store
 node_modules
 /dist
