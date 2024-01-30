@@ -31,7 +31,7 @@ class db_query:
         conn = psycopg2.connect(**self.db_params)
         return conn
     
-    def get_personal_best(self, first_name: str, last_name: str, distance: str) -> None:
+    def get_personal_best(self, first_name: str, last_name: str, team: str, distance: str) -> None:
     
         if distance == '8k':
             one = '8k'
@@ -76,8 +76,11 @@ class db_query:
                     RaceResults rr ON rn.lacctic_id = rr.lacctic_id
                 JOIN 
                     Races r ON rr.meet_id = r.meet_id
+                JOIN
+                    Teams t ON rn.team_id = t.team_id
                 WHERE 
                     rn.firstname = %s AND rn.lastname = %s AND 
+                    t.name = %s AND
                     (
                         r.section LIKE %s OR
                         r.section LIKE %s OR
@@ -88,7 +91,7 @@ class db_query:
                     )
                 GROUP BY 
                     rn.firstname, rn.lastname;
-            """, (first_name, last_name, "%"+one+"%", "%"+two+"%", "%"+three+"%", "%"+four+"%", "%"+five+"%", "%"+six+"%"))
+            """, (first_name, last_name, team, "%"+one+"%", "%"+two+"%", "%"+three+"%", "%"+four+"%", "%"+five+"%", "%"+six+"%"))
             
             result = cur.fetchone()
             if result:
@@ -96,7 +99,7 @@ class db_query:
             else:
                 return(None)
 
-    def get_season_best(self, first_name: str, last_name: str, year: int, distance: str) -> None:
+    def get_season_best(self, first_name: str, last_name: str, team : str, year: int, distance: str) -> None:
     
         if distance == '8k':
             one = '8k'
@@ -141,7 +144,10 @@ class db_query:
                     RaceResults rr ON rn.lacctic_id = rr.lacctic_id
                 JOIN 
                     Races r ON rr.meet_id = r.meet_id
+                JOIN
+                    Teams t ON rn.team_id = t.team_id
                 WHERE 
+                    t.name = %s AND
                     rn.firstname = %s AND 
                     rn.lastname = %s AND 
                     EXTRACT(YEAR FROM r.date) = %s AND
@@ -155,7 +161,7 @@ class db_query:
                     )
                 GROUP BY 
                     rn.firstname, rn.lastname;
-            """, (first_name, last_name, str(year), "%"+one+"%", "%"+two+"%", "%"+three+"%", "%"+four+"%", "%"+five+"%", "%"+six+"%"))
+            """, (first_name, last_name, team, str(year), "%"+one+"%", "%"+two+"%", "%"+three+"%", "%"+four+"%", "%"+five+"%", "%"+six+"%"))
             
             result = cur.fetchone()
             if result:
