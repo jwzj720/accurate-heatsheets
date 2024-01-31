@@ -98,7 +98,7 @@ def find_athlete_in_line(line):
     return({
         "name":name[0] if name else None,
         "year":year[0] if year else None,
-        "school":school[0] if school else None,
+        "school":remove_trailing_space(school[0]) if school else None,
         "time":time[0] if time else None,
         "seed":seed[0] if seed else None
     })
@@ -117,7 +117,7 @@ def extract_runners_from_text(events,split_string):
         event_count+=1
     return events
 
-def extract_json_from_heat_sheet(heat_sheet_pdf_filename):
+def extract_dict_from_heat_sheet(heat_sheet_pdf_filename):
     # Extract text 
     raw_text = extract_text_from_pdf(heat_sheet_pdf_filename)
     # cleaning functions

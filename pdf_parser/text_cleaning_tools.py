@@ -4,7 +4,12 @@ import re
 def remove_redudant_spaces(input_string):
     cleaned_string = re.sub(r'[ ]+', ' ', input_string)
     return cleaned_string
-
+# Recursivley remove all trailing spaces at the end of stringd
+def remove_trailing_space(input_string):
+    if input_string[-1] == " ":
+        return remove_trailing_space(input_string[:-1])
+    else: 
+        return input_string
 # Use regex to find a number followed by a letter and add a newline
 # This is a common PDF error
 def add_newline_after_number(input_string):
