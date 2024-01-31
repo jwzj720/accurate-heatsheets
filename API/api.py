@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 import textract
 from flask_cors import CORS, cross_origin
 
@@ -26,6 +26,14 @@ def upload_pdf():
         return jsonify({'message': 'File uploaded successfully'}), 200
     else:
         return jsonify({'error': 'Invalid file format'}), 400
+
+@app.route('/download', methods=['GET'])
+@cross_origin()
+def send_pdf():
+    try:
+        return send_file('/home/wjones/CC/Capstone/tbd2/heat_sheets/BrianC.pdf', as_attachment=True)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8081)
