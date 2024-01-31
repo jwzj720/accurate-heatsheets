@@ -28,3 +28,4 @@ pnpm-debug.log*
 # Other files
 *.pdf
 *.log
+*.csv
