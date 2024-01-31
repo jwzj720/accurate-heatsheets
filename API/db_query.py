@@ -32,7 +32,9 @@ class db_query:
         return conn
     
     def get_personal_best(self, first_name: str, last_name: str, team: str, distance: str) -> None:
-    
+        first_name_pattern = f'%{first_name}%'
+        last_name_pattern = f'%{last_name}%'
+        team_name_pattern = f'%{team}%'
         if distance == '8k':
             one = '8k'
             two = '8,000m'
@@ -67,40 +69,47 @@ class db_query:
         with self.conn.cursor() as cur:
             cur.execute("""
                 SELECT 
-                    rn.firstname,
-                    rn.lastname,
-                    MIN(rr.time) AS personal_best_time
-                FROM 
-                    Runners rn
-                JOIN 
-                    RaceResults rr ON rn.lacctic_id = rr.lacctic_id
-                JOIN 
-                    Races r ON rr.meet_id = r.meet_id
-                JOIN
-                    Teams t ON rn.team_id = t.team_id
-                WHERE 
-                    rn.firstname = %s AND rn.lastname = %s AND 
-                    t.name = %s AND
-                    (
-                        r.section LIKE %s OR
-                        r.section LIKE %s OR
-                        r.section LIKE %s OR
-                        r.section LIKE %s OR
-                        r.section LIKE %s OR
-                        r.section LIKE %s
-                    )
-                GROUP BY 
-                    rn.firstname, rn.lastname;
-            """, (first_name, last_name, team, "%"+one+"%", "%"+two+"%", "%"+three+"%", "%"+four+"%", "%"+five+"%", "%"+six+"%"))
+                rn.firstname,
+                rn.lastname,
+                t.name AS team_name,
+                MIN(rr.time) AS personal_best_time
+            FROM 
+                Runners rn
+            JOIN 
+                RaceResults rr ON rn.lacctic_id = rr.lacctic_id
+            JOIN 
+                Races r ON rr.meet_id = r.meet_id
+            JOIN 
+                Teams t ON rn.team_id = t.team_id
+            WHERE 
+                rn.firstname ILIKE %s AND 
+                rn.lastname ILIKE %s AND
+                t.name ILIKE %s AND
+                (
+                    r.section ILIKE %s OR
+                    r.section ILIKE %s OR
+                    r.section ILIKE %s OR
+                    r.section ILIKE %s OR
+                    r.section ILIKE %s OR
+                    r.section ILIKE %s
+                )
+            GROUP BY 
+                rn.firstname, rn.lastname, t.name;
+            """, (
+            first_name_pattern, last_name_pattern, team_name_pattern,
+            f'%{one}%', f'%{two}%', f'%{three}%', f'%{four}%', f'%{five}%', f'%{six}%'
+        ))
             
             result = cur.fetchone()
             if result:
-                return(result[2])
+                return(result[3])
             else:
                 return(None)
 
     def get_season_best(self, first_name: str, last_name: str, team : str, year: int, distance: str) -> None:
-    
+        first_name_pattern = f'%{first_name}%'
+        last_name_pattern = f'%{last_name}%'
+        team_name_pattern = f'%{team}%'
         if distance == '8k':
             one = '8k'
             two = '8,000m'
@@ -135,35 +144,38 @@ class db_query:
         with self.conn.cursor() as cur:
             cur.execute("""
                 SELECT 
-                    rn.firstname,
-                    rn.lastname,
-                    MIN(rr.time) AS personal_best_time
-                FROM 
-                    Runners rn
-                JOIN 
-                    RaceResults rr ON rn.lacctic_id = rr.lacctic_id
-                JOIN 
-                    Races r ON rr.meet_id = r.meet_id
-                JOIN
-                    Teams t ON rn.team_id = t.team_id
-                WHERE 
-                    rn.firstname = %s AND rn.lastname = %s AND 
-                    t.name = %s AND
-                    EXTRACT(YEAR FROM r.date) = %s AND
-                    (
-                        r.section LIKE %s OR
-                        r.section LIKE %s OR
-                        r.section LIKE %s OR
-                        r.section LIKE %s OR
-                        r.section LIKE %s OR
-                        r.section LIKE %s
-                    )
-                GROUP BY 
-                    rn.firstname, rn.lastname;
-            """, (first_name, last_name, team, str(year), "%"+one+"%", "%"+two+"%", "%"+three+"%", "%"+four+"%", "%"+five+"%", "%"+six+"%"))
-            
+                rn.firstname,
+                rn.lastname,
+                t.name AS team_name,
+                MIN(rr.time) AS personal_best_time
+            FROM 
+                Runners rn
+            JOIN 
+                RaceResults rr ON rn.lacctic_id = rr.lacctic_id
+            JOIN 
+                Races r ON rr.meet_id = r.meet_id
+            JOIN 
+                Teams t ON rn.team_id = t.team_id
+            WHERE 
+                rn.firstname ILIKE %s AND 
+                rn.lastname ILIKE %s AND
+                t.name ILIKE %s AND
+                EXTRACT(YEAR FROM r.date) = %s AND
+                (
+                    r.section ILIKE %s OR
+                    r.section ILIKE %s OR
+                    r.section ILIKE %s OR
+                    r.section ILIKE %s OR
+                    r.section ILIKE %s OR
+                    r.section ILIKE %s
+                )
+            GROUP BY 
+                rn.firstname, rn.lastname, t.name;
+            """, (
+            first_name_pattern, last_name_pattern, team_name_pattern, str(year),
+            f'%{one}%', f'%{two}%', f'%{three}%', f'%{four}%', f'%{five}%', f'%{six}%'))
             result = cur.fetchone()
             if result:
-                return(result[2])
+                return(result[3])
             else:
                 return(None)
