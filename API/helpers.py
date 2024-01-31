@@ -30,8 +30,7 @@ def create_lists_of_meet_info(meet_info_from_pdf):
 
             split_name = split_first_and_last_name(athlete['name'])
             # Query database and add to df
-            # TODO there could be a problem here with the team name being correct from heat sheet to database
-            personal_best_time = dbq.get_personal_best(split_name[1], split_name[0], athlete['school'], distance)
+            personal_best_time = dbq.get_personal_best(split_name[1], split_name[0], distance, athlete['school'])
             pr_list.append(personal_best_time)
     
     return event_list,name_list,school_list,seed_time_list,year_list,pr_list
