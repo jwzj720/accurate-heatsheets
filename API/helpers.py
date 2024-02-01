@@ -1,7 +1,26 @@
 # Helper functions for the Flask app
+import shortuuid
+import os
 import pandas as pd
 from API.db_query import db_query 
 
+#### GENERAL API HELPERS ####
+
+def allowed_file(filename, ALLOWED_EXTENSIONS): 
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def generate_uuid():
+    return shortuuid.uuid()
+
+def add_uuid_to_filename(filename,uuid):
+    base, extension = os.path.splitext(filename)
+    return f"{base}-{uuid}{extension}"
+    
+
+#### PDF TO CSV HELPERS ####
+
+# Text processing for database queries
 def distance_to_string(distance):
     if distance == "5000":
         return "5k"
@@ -50,7 +69,6 @@ def create_meet_df(event_list, name_list, school_list,
         }
     )
     
-
 def create_csv(filename,meet_info_from_pdf):   
     event_list,name_list,school_list,seed_time_list,year_list,pr_list = create_lists_of_meet_info(meet_info_from_pdf)
     output_df = create_meet_df(event_list,name_list,school_list,
