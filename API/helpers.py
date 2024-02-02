@@ -1,8 +1,19 @@
 # Helper functions for the Flask app
 import shortuuid
 import os
+import sys
 import pandas as pd
-from API.db_query import db_query 
+from db_query import db_query 
+
+# Get the absolute path of the directory containing the current file
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Add the parent directory to the sys.path list
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+# Now you can import modules from the 'utils' directory
+from pdf_parser.pdf_parsing import extract_dict_from_heat_sheet
+
 
 #### GENERAL API HELPERS ####
 
@@ -69,11 +80,12 @@ def create_meet_df(event_list, name_list, school_list,
         }
     )
     
-def create_csv(filename,meet_info_from_pdf):   
+def create_csv(filename,meet_info_from_pdf,download_folder):   
     event_list,name_list,school_list,seed_time_list,year_list,pr_list = create_lists_of_meet_info(meet_info_from_pdf)
     output_df = create_meet_df(event_list,name_list,school_list,
                                seed_time_list,year_list,pr_list)
     
-    output_file_name = f"{filename.replace('.','')}_results.csv"
-    csv_file = output_df.to_csv(output_file_name)
-    return csv_file
+    output_file_name = f"{filename.replace('.pdf','')}_results.csv"
+    path_to_output_file = os.path.join(download_folder, output_file_name)
+    csv_file = output_df.to_csv(path_to_output_file)
+    return csv_file, path_to_output_file
