@@ -11,16 +11,28 @@ import axios from 'axios';
 export default {
   methods: {
     downloadItem() {
-      axios.get('http://127.0.0.1:8081/download', { responseType: 'blob' })
+      // Get filename from a cookie
+      const filename = this.getCookie('filename') || 'downloaded.csv'; // Default filename
+
+      axios.get(`http://127.0.0.1:8081/pdf/${filename}`,{
+        responseType: 'blob' // Set responseType to 'blob' to indicate binary data
+      })
         .then(response => {
-          const blob = new Blob([response.data], { type: 'application/pdf' }); 
-          const link = document.createElement('a'); // creates a new HTML anchor element - creates a trigger for the filedownload
-          link.href = URL.createObjectURL(blob);
-          link.download = 'downloaded.pdf'; //TODO: change this to the name of the file downloaded
-          link.click();
-          URL.revokeObjectURL(link.href);
+          console.log("new data");
+          const blob = new Blob([response.data], { type: 'text/csv' }); // looks for a file of type csv
+          const link = document.createElement('a'); // Create new <a> tag
+          link.href = URL.createObjectURL(blob); // Set href to the blob URL
+
+          link.download = "results_new.csv" // name of the file for the system to see
+          link.click(); // Trigger the download
+          URL.revokeObjectURL(link.href); // Free up the memory
         })
         .catch(console.error);
+    },
+    getCookie(name) {
+      const value = `; ${document.cookie}`; // gets the cookie 
+      const parts = value.split(`; ${name}=`); // splits the cookie
+      if (parts.length === 2) return parts.pop().split(';').shift(); // returns the filename 
     }
   }
 }

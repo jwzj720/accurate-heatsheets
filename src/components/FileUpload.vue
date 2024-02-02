@@ -27,8 +27,13 @@
           headers: {
             'Content-Type': 'multipart/form-data'
           }
-        }).then(() => {
+        }).then((response) => {
           console.log('SUCCESS!');
+          // Get filename from the response
+          const filename = response.data.filename;
+
+          // Set filename as a cookie
+          document.cookie = `filename=${filename}; path=/`;
         })
         .catch(() => {
           console.log('FAILURE!');

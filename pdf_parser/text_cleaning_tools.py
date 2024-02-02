@@ -13,7 +13,7 @@ def remove_trailing_space(input_string):
 # Use regex to find a number followed by a letter and add a newline
 # This is a common PDF error
 def add_newline_after_number(input_string):
-    pattern = re.compile(r'(\d)([A-Za-z])')
+    pattern = re.compile(r'(\d)([a-ln-zA-Z])') # excludes lower case m bc there shouldn't be a \n after 23.4m
     result = pattern.sub(r'\1\n\2', input_string)
     return result
 

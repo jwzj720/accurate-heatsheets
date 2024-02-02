@@ -4,7 +4,7 @@ import psycopg2
 from typing import Dict, List
 import logging 
 
-load_dotenv('/home/wjones/CC/Capstone/tbd2/LACCTiC/.env', override=True)
+load_dotenv('/home/webserver/tbd2/API/.env', override=True)
 
 db_name = os.getenv('DB_NAME')
 db_user = os.getenv('DB_USER')
@@ -64,7 +64,6 @@ class db_query:
             five = "6000"
             six = "6"
         else:
-            print("Invalid distance")
             return
         with self.conn.cursor() as cur:
             if team:
@@ -169,7 +168,6 @@ class db_query:
             five = "6000"
             six = "6"
         else:
-            print("Invalid distance")
             return
         with self.conn.cursor() as cur:
             if team:
