@@ -18,7 +18,7 @@ export default {
         responseType: 'blob' // Set responseType to 'blob' to indicate binary data
       })
         .then(response => {
-          console.log("new data");
+          console.log("File recieved!");
           const blob = new Blob([response.data], { type: 'text/csv' }); // looks for a file of type csv
           const link = document.createElement('a'); // Create new <a> tag
           link.href = URL.createObjectURL(blob); // Set href to the blob URL
