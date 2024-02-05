@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # accurate-heatsheets
 A capstone project to improve the accuracy of colligate distance track heat sheets by providing real times for runners.
 
@@ -15,3 +16,6 @@ run docker-build-run.sh
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+# tbd2
+>>>>>>> tbd2/main
