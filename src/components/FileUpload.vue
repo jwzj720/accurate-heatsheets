@@ -23,7 +23,7 @@
         let formData = new FormData();
         formData.append('file', this.selectedFile);
   
-        axios.post('heatsheet-api.vercel.app/upload', formData, {
+        axios.post('valterbonez.tplinkdns.com/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
