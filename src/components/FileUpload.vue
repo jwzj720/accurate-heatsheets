@@ -23,7 +23,7 @@
         let formData = new FormData();
         formData.append('file', this.selectedFile);
   
-        axios.post('http://valterbonez.tplinkdns.com:8081/upload', formData, {
+        axios.post('api.valterbonez.com:8081/upload', formData, {
             'Content-Type': 'multipart/form-data'
           }).then((response) => {
           console.log('SUCCESS!');
