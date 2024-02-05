@@ -23,7 +23,7 @@ export default {
       let formData = new FormData();
       formData.append('file', this.selectedFile);
 
-      axios.post('https://api.valterbonez.com:8080/upload', formData, {
+      axios.post('https://api.valterbonez.com:443/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
