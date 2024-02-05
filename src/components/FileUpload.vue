@@ -23,11 +23,9 @@
         let formData = new FormData();
         formData.append('file', this.selectedFile);
   
-        axios.post('valterbonez.tplinkdns.com/upload', formData, {
-          headers: {
+        axios.post('http://valterbonez.tplinkdns.com:8081/upload', formData, {
             'Content-Type': 'multipart/form-data'
-          }
-        }).then((response) => {
+          }).then((response) => {
           console.log('SUCCESS!');
           // Get filename from the response
           const filename = response.data.filename;
