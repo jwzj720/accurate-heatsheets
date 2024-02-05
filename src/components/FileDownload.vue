@@ -14,7 +14,7 @@ export default {
       // Get filename from a cookie
       const filename = this.getCookie('filename') || 'downloaded.csv'; // Default filename
 
-      axios.get(`api.valterbonez.com:8081/pdf/${filename}`,{
+      axios.get(`api.valterbonez.com/pdf/${filename}`,{
         responseType: 'blob' // Set responseType to 'blob' to indicate binary data
       })
         .then(response => {
