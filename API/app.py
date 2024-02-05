@@ -9,8 +9,11 @@ from helpers import *
 ALLOWED_EXTENSIONS = {'pdf'}
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:8080"}})
-
+CORS(app, resources={
+    r"/*": {
+        "origins": ["https://accurate-heatsheets-git-integration-jwzj720s-projects.vercel.app"]
+    }
+})
 # You need to create your own 'app_settings.py" file
 app.config.from_object('app_settings')
 
@@ -82,4 +85,4 @@ def return_info(filename):
     return response
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8081)
+    app.run(host='0.0.0.0', port=8080)
