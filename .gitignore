@@ -10,7 +10,9 @@ dist/*
 .env.*.local
 .env*
 API/api/*
-
+experiment_notebooks/CSV/*
+experiment_notebooks/csv_insert.py
+experiment_notebooks/csv_insert.py
 # Log files
 npm-debug.log*
 yarn-debug.log*
