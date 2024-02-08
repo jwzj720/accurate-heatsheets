@@ -11,7 +11,7 @@ ALLOWED_EXTENSIONS = {'pdf'}
 app = Flask(__name__)
 CORS(app, resources={
     r"/*": {
-        "origins": ["https://accurate-heatsheets-git-integration-jwzj720s-projects.vercel.app"]
+        "origins": ["https://accurate-heat-sheets.com"]
     }
 })
 # You need to create your own 'app_settings.py" file
@@ -49,11 +49,11 @@ def upload_pdf():
 def return_info(filename):
     try: 
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        app.logger.info(f"File recieved:{filename}")
+        app.logger.info(f"File received: {filename}")
     except Exception as e :
-        app.logger.error("Error finding file")
+        app.logger.error("Error finding file", exc_info=True)
         traceback.print_exc() # print stack trace to flask logs
-        return jsonify({'error': 'No file uploaded','exception_type':e}), 400
+        return jsonify({'error': 'No file uploaded', 'exception_type': str(e)}), 400
     
     try:
         meet_info_from_pdf = extract_dict_from_heat_sheet(file_path)
