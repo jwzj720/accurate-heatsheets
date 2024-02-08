@@ -13,7 +13,10 @@ export default {
     downloadItem() {
       // Get filename from a cookie
       const filename = this.getCookie('filename') || 'downloaded.csv'; // Default filename
-
+      if (filename === 'downloaded.csv') {
+        console.error('Filename not found in cookies');
+        return;
+      }
       axios.get(`https://api.valterbonez.com:443/pdf/${filename}`,{
         responseType: 'blob' // Set responseType to 'blob' to indicate binary data
       })
