@@ -34,6 +34,7 @@ export default {
 </script>
 
 <style>
+@import './styles.css'; 
 .container {
   text-align: center;
   font-family: 'Open Sans', sans-serif;
