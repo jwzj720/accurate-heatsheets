@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container">
-    <h1 class="title">Accurate Heat Sheets App</h1>
+    <h1 class="title">Accurate Heat Sheets</h1>
     
     <section class="upload-section">
       <file-upload></file-upload>
