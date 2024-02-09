@@ -12,6 +12,9 @@
   </div>
 </template>
 
+<script>
+
+
 import FileUpload from "./components/FileUpload.vue";
 import FileDownload from "./components/FileDownload.vue";
 
