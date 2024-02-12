@@ -1,7 +1,14 @@
 <template>
   <div>
     <h2>Download New Heatsheet</h2>
-    <button @click="downloadItem">Download</button>
+    <button :disabled="isLoading" @click="downloadItem">
+      <span v-if="isLoading">
+        <i class="fa fa-spinner fa-spin"></i> Loading
+      </span>
+      <span v-else>
+        Download
+      </span>
+    </button>
   </div>
 </template>
 
@@ -9,12 +16,23 @@
 import axios from 'axios';
 
 export default {
+  data() {
+    return {
+      isLoading: false, // Add a new loading state
+    };
+  },
   methods: {
     downloadItem() {
+      this.isLoading = true; // Set loading state to true when download starts
+
       // Get filename from a cookie
       const filename = this.getCookie('filename') || 'downloaded.csv'; // Default filename
-
-      axios.get(`heatsheet-api.vercel.app/pdf/${filename}`,{
+      if (filename === 'downloaded.csv') {
+        console.error('Filename not found in cookies');
+        this.isLoading = false; // Set loading state to false if there's an error
+        return;
+      }
+      axios.get(`https://api.valterbonez.com:443/pdf/${filename}`,{
         responseType: 'blob' // Set responseType to 'blob' to indicate binary data
       })
         .then(response => {
@@ -26,8 +44,13 @@ export default {
           link.download = "results_new.csv" // name of the file for the system to see
           link.click(); // Trigger the download
           URL.revokeObjectURL(link.href); // Free up the memory
+
+          this.isLoading = false; // Set loading state to false when download is complete
         })
-        .catch(console.error);
+        .catch(error => {
+          console.error(error);
+          this.isLoading = false; // Set loading state to false if there's an error
+        });
     },
     getCookie(name) {
       const value = `; ${document.cookie}`; // gets the cookie 
@@ -37,3 +60,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+button[disabled] {
+  background-color: grey;
+  cursor: not-allowed;
+}
+</style>

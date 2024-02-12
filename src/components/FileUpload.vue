@@ -12,14 +12,16 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      selectedFile: null
-    }
+      selectedFile: null,
+      isLoading: false, // Add a new loading state
+    };
   },
   methods: {
     onFileChange(e) {
       this.selectedFile = e.target.files[0];
     },
     upload() {
+      this.isLoading = true; // Set loading state to true when download starts
       let formData = new FormData();
       formData.append('file', this.selectedFile);
 
@@ -29,16 +31,27 @@ export default {
         }
       }).then((response) => {
         console.log('SUCCESS!');
+
         // Get filename from the response
         const filename = response.data.filename;
 
         // Set filename as a cookie
         document.cookie = `filename=${filename}; path=/`;
+        this.isLoading = false; // Set loading state to false if there's an error
       })
       .catch(() => {
         console.log('FAILURE!');
+        this.isLoading = false; // Set loading state to false if there's an error
+  
       });
     }
   }
 }
 </script>
+
+<style scoped>
+button[disabled] {
+  background-color: grey;
+  cursor: not-allowed;
+}
+</style>
