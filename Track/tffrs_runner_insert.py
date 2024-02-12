@@ -6,7 +6,7 @@ from typing import Dict, List
 import logging 
 import csv
 # Load the environment variables from .env file
-load_dotenv('/home/wjones/CC/Capstone/accurate-heatsheets/Track/.env', override=True)
+load_dotenv('.env', override=True)
 logging.basicConfig(filename='db_insert.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 # Get the database credentials from environment variables
@@ -34,13 +34,14 @@ def insert_or_update_runner(conn, runner_data):
     with conn.cursor() as cur:
         cur.execute("""
             INSERT INTO runners (tfrrs_id, firstname, lastname, team_name)
-            VALUES (%s, %s, %s, %s);
+            VALUES (%s, %s, %s, %s)
+            ON CONFLICT DO NOTHING;
         """, (runner_data['tffrs_id'], runner_data['first_name'], runner_data['last_name'], runner_data['team_name']))
         conn.commit()
 
 def main():
     conn = connect_db(db_params)
-    with open('csv/nrunners_parsed_with_names_split.csv', 'r') as file:
+    with open('csv/runners_parsed_with_names_split.csv', 'r') as file:
         reader = csv.DictReader(file)
         runners_from_csv = [row for row in reader]
     for runner in runners_from_csv:  
