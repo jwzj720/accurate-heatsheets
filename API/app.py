@@ -1,6 +1,6 @@
 import os
 import traceback
-from flask import  Flask, request, session, jsonify, redirect, url_for, send_file, make_response
+from flask import  Flask, request, session, jsonify, redirect, url_for, send_file, make_response, render_template_string
 from flask_cors import cross_origin, CORS
 from flask import jsonify
 from werkzeug.utils import secure_filename
@@ -84,5 +84,45 @@ def return_info(filename):
     app.logger.info("Sucessfully sent csv to vue app")
     return response
 
+@app.route('/table/<filename>', methods=['GET','POST'])
+@cross_origin()
+def table(filename):
+    try: 
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        app.logger.info(f"File received: {filename}")
+    except Exception as e :
+        app.logger.error("Error finding file", exc_info=True)
+        traceback.print_exc() # print stack trace to flask logs
+        return jsonify({'error': 'No file uploaded', 'exception_type': str(e)}), 400
+    
+    try:
+        meet_info_from_pdf = extract_dict_from_heat_sheet(file_path)
+        app.logger.info(f"Meet info generated!")
+    except Exception as e:
+        app.logger.error("Error parsing pdf")
+        traceback.print_exc()
+        return jsonify({'error': 'could not parse PDF','exception_type':e}), 400
+    
+    try:
+        json_data = create_json(meet_info_from_pdf)
+        app.logger.info(f"JSON created")
+    except Exception as e:
+        if e == FileNotFoundError:
+            app.logger.error("File not found")
+            return jsonify({'error': 'File not found.'}), 400
+        else:
+            app.logger.error("ERROR CREATING JSON")
+            traceback.print_exc()
+            return jsonify({'error': 'Error creating JSON.','exception_type':e}), 400
+
+    
+    response = jsonify(json_data)
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    response.headers['Content-Type'] = 'application/json'
+    app.logger.info("Sucessfully sent JSON to vue app")
+    
+    return response
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

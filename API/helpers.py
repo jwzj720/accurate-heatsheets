@@ -80,7 +80,10 @@ def create_meet_df(event_list, name_list, school_list,
             "Event PR":pr_list
         }
     )
-    
+def create_json(meet_info_from_pdf):
+    json_dict = create_meet_df(meet_info_from_pdf).to_dict(orient='records')
+    return json_dict
+
 def create_csv(filename,meet_info_from_pdf,download_folder):   
     event_list,name_list,school_list,seed_time_list,year_list,pr_list = create_lists_of_meet_info(meet_info_from_pdf)
     output_df = create_meet_df(event_list,name_list,school_list,
