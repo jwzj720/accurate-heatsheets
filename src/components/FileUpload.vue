@@ -3,6 +3,7 @@
     <h2>Upload a PDF</h2>
     <input type="file" @change="onFileChange" accept="application/pdf" />
     <button @click="upload">Upload</button>
+    <p>{{ uploadMessage }}</p> <!-- Display the upload message here -->
   </div>
 </template>
 
@@ -13,7 +14,8 @@ export default {
   data() {
     return {
       selectedFile: null,
-      isLoading: false, // Add a new loading state
+      isLoading: false,
+      uploadMessage: '', // Add a new property for the upload message
     };
   },
   methods: {
@@ -21,7 +23,7 @@ export default {
       this.selectedFile = e.target.files[0];
     },
     upload() {
-      this.isLoading = true; // Set loading state to true when download starts
+      this.isLoading = true;
       let formData = new FormData();
       formData.append('file', this.selectedFile);
 
@@ -31,18 +33,15 @@ export default {
         }
       }).then((response) => {
         console.log('SUCCESS!');
-
-        // Get filename from the response
         const filename = response.data.filename;
-
-        // Set filename as a cookie
         document.cookie = `filename=${filename}; path=/`;
-        this.isLoading = false; // Set loading state to false if there's an error
+        this.isLoading = false;
+        this.uploadMessage = 'File uploaded successfully!'; // Set the success message
       })
       .catch(() => {
         console.log('FAILURE!');
-        this.isLoading = false; // Set loading state to false if there's an error
-  
+        this.isLoading = false;
+        this.uploadMessage = 'File upload failed!'; // Set the failure message
       });
     }
   }
