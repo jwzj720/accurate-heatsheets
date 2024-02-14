@@ -18,11 +18,19 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      isLoading: false, // Add a new loading state
+      isFileReady: false, // Track file readiness
+      isLoading: false,
     };
   },
+  created() {
+    this.$on('file-ready', (isReady) => {
+      this.isFileReady = isReady; // Listen for the file-ready event
+    });
+  },
+
   methods: {
     downloadItem() {
+      if (!this.isFileReady) return;
       this.isLoading = true; // Set loading state to true when download starts
 
       // Get filename from a cookie

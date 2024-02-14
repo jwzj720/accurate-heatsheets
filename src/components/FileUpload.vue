@@ -43,7 +43,22 @@ export default {
         this.isLoading = false;
         this.uploadMessage = 'File upload failed!'; // Set the failure message
       });
-    }
+    },
+    pollForFileReady(filename) {
+    const checkStatus = () => {
+      axios.get(`https://api.valterbonez.com:443/status/${filename}`)
+        .then(response => {
+          if (response.data.status === 'ready') {
+            this.$emit('file-ready', true); // Emit an event indicating the file is ready
+            clearInterval(this.pollingInterval);
+          }
+        }).catch(error => {
+          console.error('Error polling for file status', error);
+        });
+    };
+
+    this.pollingInterval = setInterval(checkStatus, 5000); // Check every 5 seconds
+    },
   }
 }
 </script>
@@ -54,3 +69,4 @@ button[disabled] {
   cursor: not-allowed;
 }
 </style>
+
