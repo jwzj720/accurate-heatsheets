@@ -42,7 +42,7 @@ export default {
     return {
       isFileReady: false, // Track file readiness
       isLoading: false, // Track if the download is in progress
-      isProcessing: true, // Track if the file is being processed
+      isProcessing: false, // Track if the file is being processed
       uploadStarted: false,
     };
   },
