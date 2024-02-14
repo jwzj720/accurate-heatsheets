@@ -9,6 +9,8 @@
 
 <script>
 import axios from 'axios';
+import emitter from '@/plugins/eventbus';
+
 
 export default {
   data() {
@@ -45,22 +47,23 @@ export default {
       });
     },
     pollForFileReady(filename) {
-    const checkStatus = () => {
-      axios.get(`https://api.valterbonez.com:443/status/${filename}`)
-        .then(response => {
-          if (response.data.status === 'ready') {
-            this.$emit('file-ready', true); // Emit an event indicating the file is ready
-            clearInterval(this.pollingInterval);
-          }
-        }).catch(error => {
-          console.error('Error polling for file status', error);
-        });
-    };
+      const checkStatus = () => {
+        axios.get(`https://api.valterbonez.com:443/status/${filename}`)
+          .then(response => {
+            if (response.data.status === 'ready') {
+              emitter.emit('file-ready', true); // Emit an event when the file is ready
+              clearInterval(this.pollingInterval);
+            }
+          }).catch(error => {
+            console.error('Error polling for file status', error);
+          });
+      };
 
-    this.pollingInterval = setInterval(checkStatus, 5000); // Check every 5 seconds
+      this.pollingInterval = setInterval(checkStatus, 5000);
     },
-  }
+  },
 }
+
 </script>
 
 <style scoped>

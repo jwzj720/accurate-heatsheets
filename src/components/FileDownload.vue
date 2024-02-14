@@ -14,18 +14,24 @@
 
 <script>
 import axios from 'axios';
+import emitter from '@/plugins/eventbus';
 
 export default {
+  mounted() {
+    emitter.on('file-ready', (isReady) => {
+      if (isReady) {
+        this.isFileReady = true;
+      }
+    });
+  },
+  beforeUnmount() {
+    emitter.off('file-ready'); // Clean up the event listener when the component unmounts
+  },
   data() {
     return {
       isFileReady: false, // Track file readiness
       isLoading: false,
     };
-  },
-  created() {
-    this.$on('file-ready', (isReady) => {
-      this.isFileReady = isReady; // Listen for the file-ready event
-    });
   },
 
   methods: {

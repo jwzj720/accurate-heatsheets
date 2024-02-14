@@ -13,8 +13,6 @@
 </template>
 
 <script>
-
-import { reactive, provide } from 'vue';
 import FileUpload from "./components/FileUpload.vue";
 import FileDownload from "./components/FileDownload.vue";
 
@@ -23,27 +21,11 @@ export default {
   components: {
     FileUpload,
     FileDownload,
-  },
-  setup() {
-    const state = reactive({
-      isFileReady: false
-    });
-
-    provide('state', state);
-
-    return {};
-  },
-  data()
-  {
-    return {
-    };
-  },
+  }
 };
-
 </script>
 
 <style>
-/* Add this CSS to your components */
 
 /* General styles */
 body, html {
