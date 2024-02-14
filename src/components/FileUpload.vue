@@ -40,6 +40,7 @@ export default {
         this.isLoading = false;
         this.uploadMessage = 'File uploaded successfully!'; // Set the success message
         this.pollForFileReady(filename);
+        emitter.emit('upload-started', true);
       })
       .catch(() => {
         console.log('FAILURE!');
@@ -60,7 +61,7 @@ export default {
           });
       };
 
-      this.pollingInterval = setInterval(checkStatus, 5000);
+      this.pollingInterval = setInterval(checkStatus, 10000);
     },
   },
 }

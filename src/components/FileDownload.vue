@@ -1,16 +1,18 @@
 <template>
   <div>
     <h2>Download New Heatsheet</h2>
-    <button :disabled="isLoading || isProcessing" @click="downloadItem">
+    <button :disabled="!isFileReady" @click="downloadItem">
       <span v-if="isProcessing">
         <i class="fa fa-spinner fa-spin"></i> Processing...
       </span>
       <span v-else-if="isLoading">
         <i class="fa fa-spinner fa-spin"></i> Loading...
       </span>
-      <span v-else>
+      <!-- Display "Download" only when the file is ready, otherwise no text -->
+      <span v-else-if="isFileReady">
         Download
       </span>
+      <!-- Nothing in the initial state, the button should be empty -->
     </button>
   </div>
 </template>
@@ -20,19 +22,28 @@ import emitter from '../eventbus';
 
 export default {
   mounted() {
+    emitter.on('upload-started', () => {
+      this.isProcessing = true;
+      this.isFileReady = false;
+    });
     emitter.on('file-ready', (isReady) => {
+      this.isProcessing = false;
       this.isFileReady = isReady;
-      this.isProcessing = !isReady; // When the file is ready, processing is false
+      if (isReady) {
+        this.isLoading = false; // Assuming the file is now ready to be downloaded
+      }
     });
   },
   beforeUnmount() {
-    emitter.off('file-ready'); // Clean up the event listener when the component unmounts
+    emitter.off('upload-started');
+    emitter.off('file-ready');
   },
   data() {
     return {
       isFileReady: false, // Track file readiness
       isLoading: false, // Track if the download is in progress
       isProcessing: true, // Track if the file is being processed
+      uploadStarted: false,
     };
   },
 
