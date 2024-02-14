@@ -15,3 +15,6 @@ run docker-build-run.sh
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=========
+# tbd2
+>>>>>>>>> Temporary merge branch 2
