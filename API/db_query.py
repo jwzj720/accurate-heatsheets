@@ -4,7 +4,7 @@ import psycopg2
 from typing import Dict, List
 import logging 
 
-load_dotenv('/home/webserver/tbd2/API/.env', override=True)
+load_dotenv('/home/wjones/CC/Capstone/tbd2/Track/.env', override=True)
 
 db_name = os.getenv('DB_NAME')
 db_user = os.getenv('DB_USER')
@@ -63,6 +63,27 @@ class db_query:
             four = '6.0k'
             five = "6000"
             six = "6"
+        elif distance == '1500m':
+            one = '1500m'
+            two = '1500'
+            three = '1,500m'
+            four = '1,500'
+            five = '1500m'
+            six = '1500'
+        elif distance == '3000m':
+            one = '3000m'
+            two = '3000'
+            three = '3,000m'
+            four = '3,000'
+            five = '3000m'
+            six = '3000'
+        elif distance == '800m':
+            one = '800m'
+            two = '800'
+            three = '800m'
+            four = '800'
+            five = '800m'
+            six = '800'
         else:
             return
         with self.conn.cursor() as cur:
@@ -71,20 +92,18 @@ class db_query:
                     SELECT 
                     rn.firstname,
                     rn.lastname,
-                    t.name AS team_name,
+                    rn.team_name AS team_name,
                     MIN(rr.time) AS personal_best_time
                     FROM 
                         Runners rn
                     JOIN 
-                        RaceResults rr ON rn.lacctic_id = rr.lacctic_id
+                        RaceResults rr ON rn.tfrrs_id = rr.tfrrs_id
                     JOIN 
-                        Races r ON rr.meet_id = r.meet_id
-                    JOIN 
-                        Teams t ON rn.team_id = t.team_id
+                        Races r ON rr.tfrrs_meet_id = r.tfrrs_meet_id
                     WHERE 
                         rn.firstname ILIKE %s AND 
                         rn.lastname ILIKE %s AND
-                        t.name ILIKE %s AND
+                        rn.team_name ILIKE %s AND
                         (
                             r.section ILIKE %s OR
                             r.section ILIKE %s OR
@@ -94,7 +113,7 @@ class db_query:
                             r.section ILIKE %s
                         )
                     GROUP BY 
-                        rn.firstname, rn.lastname, t.name;
+                        rn.firstname, rn.lastname, rn.team_name;
                     """, (
                     first_name_pattern, last_name_pattern, team_name_pattern,
                     f'%{one}%', f'%{two}%', f'%{three}%', f'%{four}%', f'%{five}%', f'%{six}%'))
@@ -103,16 +122,13 @@ class db_query:
                     SELECT 
                     rn.firstname,
                     rn.lastname,
-                    t.name AS team_name,
                     MIN(rr.time) AS personal_best_time
                     FROM 
                         Runners rn
                     JOIN 
-                        RaceResults rr ON rn.lacctic_id = rr.lacctic_id
+                        RaceResults rr ON rn.tfrrs_id = rr.tfrrs_id
                     JOIN 
-                        Races r ON rr.meet_id = r.meet_id
-                    JOIN 
-                        Teams t ON rn.team_id = t.team_id
+                        Races r ON rr.tfrrs_meet_id = r.tfrrs_meet_id
                     WHERE 
                         rn.firstname ILIKE %s AND 
                         rn.lastname ILIKE %s AND
@@ -125,13 +141,15 @@ class db_query:
                             r.section ILIKE %s
                         )
                     GROUP BY 
-                        rn.firstname, rn.lastname, t.name;
+                        rn.firstname, rn.lastname;
                     """, (
                     first_name_pattern, last_name_pattern,
                     f'%{one}%', f'%{two}%', f'%{three}%', f'%{four}%', f'%{five}%', f'%{six}%'))
             result = cur.fetchone()
-            if result:
+            if result and result[3]:
                 return(result[3])
+            elif result and result[2]: 
+                return(result[2])
             else:
                 return(None)
 
@@ -167,6 +185,27 @@ class db_query:
             four = '6.0k'
             five = "6000"
             six = "6"
+        elif distance == '1500m':
+            one = '1500m'
+            two = '1500'
+            three = '1,500m'
+            four = '1,500'
+            five = '1500m'
+            six = '1500'
+        elif distance == '3000m':
+            one = '3000m'
+            two = '3000'
+            three = '3,000m'
+            four = '3,000'
+            five = '3000m'
+            six = '3000'
+        elif distance == '800m':
+            one = '800m'
+            two = '800'
+            three = '800m'
+            four = '800'
+            five = '800m'
+            six = '800'
         else:
             return
         with self.conn.cursor() as cur:
@@ -175,21 +214,19 @@ class db_query:
                     SELECT 
                     rn.firstname,
                     rn.lastname,
-                    t.name AS team_name,
+                    rn.team_name AS team_name,
                     MIN(rr.time) AS personal_best_time
                     FROM 
                         Runners rn
                     JOIN 
-                        RaceResults rr ON rn.lacctic_id = rr.lacctic_id
+                        RaceResults rr ON rn.tfrrs_id = rr.tfrrs_id
                     JOIN 
-                        Races r ON rr.meet_id = r.meet_id
-                    JOIN 
-                        Teams t ON rn.team_id = t.team_id
+                        Races r ON rr.tfrrs_meet_id = r.tfrrs_meet_id
                     WHERE 
                         rn.firstname ILIKE %s AND 
                         rn.lastname ILIKE %s AND
-                        t.name ILIKE %s AND
-                        EXTRACT(YEAR FROM r.date) = %s AND
+                        rn.team_name ILIKE %s AND
+                        r.date ILIKE %s AND
                         (
                             r.section ILIKE %s OR
                             r.section ILIKE %s OR
@@ -199,29 +236,26 @@ class db_query:
                             r.section ILIKE %s
                         )
                     GROUP BY 
-                        rn.firstname, rn.lastname, t.name;
+                        rn.firstname, rn.lastname, rn.team_name;
                     """, (
-                    first_name_pattern, last_name_pattern, team_name_pattern, str(year),
+                    first_name_pattern, last_name_pattern, team_name_pattern, '%' + str(year) + '%',
                     f'%{one}%', f'%{two}%', f'%{three}%', f'%{four}%', f'%{five}%', f'%{six}%'))
             else:
                 cur.execute("""
                     SELECT 
                     rn.firstname,
                     rn.lastname,
-                    t.name AS team_name,
                     MIN(rr.time) AS personal_best_time
                     FROM 
                         Runners rn
                     JOIN 
-                        RaceResults rr ON rn.lacctic_id = rr.lacctic_id
+                        RaceResults rr ON rn.tfrrs_id = rr.tfrrs_id
                     JOIN 
-                        Races r ON rr.meet_id = r.meet_id
-                    JOIN 
-                        Teams t ON rn.team_id = t.team_id
+                        Races r ON rr.tfrrs_meet_id = r.tfrrs_meet_id
                     WHERE 
                         rn.firstname ILIKE %s AND 
                         rn.lastname ILIKE %s AND
-                        EXTRACT(YEAR FROM r.date) = %s AND
+                        r.date ILIKE %s AND 
                         (
                             r.section ILIKE %s OR
                             r.section ILIKE %s OR
@@ -231,12 +265,14 @@ class db_query:
                             r.section ILIKE %s
                         )
                     GROUP BY 
-                        rn.firstname, rn.lastname, t.name;
+                        rn.firstname, rn.lastname;
                     """, (
-                    first_name_pattern, last_name_pattern, str(year),
+                    first_name_pattern, last_name_pattern, '%' + str(year) + '%',
                     f'%{one}%', f'%{two}%', f'%{three}%', f'%{four}%', f'%{five}%', f'%{six}%'))
             result = cur.fetchone()
-            if result:
+            if result and result[3]:
                 return(result[3])
+            elif result and result[2]: 
+                return(result[2])
             else:
                 return(None)
