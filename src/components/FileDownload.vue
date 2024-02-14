@@ -14,7 +14,7 @@
 
 <script>
 import axios from 'axios';
-import emitter from '@/plugins/eventbus';
+import emitter from '../eventbus';
 
 export default {
   mounted() {
