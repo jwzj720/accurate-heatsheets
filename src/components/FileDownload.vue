@@ -1,9 +1,12 @@
 <template>
   <div>
     <h2>Download New Heatsheet</h2>
-    <button :disabled="isLoading" @click="downloadItem">
-      <span v-if="isLoading">
-        <i class="fa fa-spinner fa-spin"></i> Loading
+    <button :disabled="isLoading || isProcessing" @click="downloadItem">
+      <span v-if="isProcessing">
+        <i class="fa fa-spinner fa-spin"></i> Processing...
+      </span>
+      <span v-else-if="isLoading">
+        <i class="fa fa-spinner fa-spin"></i> Loading...
       </span>
       <span v-else>
         Download
@@ -11,7 +14,6 @@
     </button>
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 import emitter from '../eventbus';
@@ -19,9 +21,8 @@ import emitter from '../eventbus';
 export default {
   mounted() {
     emitter.on('file-ready', (isReady) => {
-      if (isReady) {
-        this.isFileReady = true;
-      }
+      this.isFileReady = isReady;
+      this.isProcessing = !isReady; // When the file is ready, processing is false
     });
   },
   beforeUnmount() {
@@ -30,7 +31,8 @@ export default {
   data() {
     return {
       isFileReady: false, // Track file readiness
-      isLoading: false,
+      isLoading: false, // Track if the download is in progress
+      isProcessing: true, // Track if the file is being processed
     };
   },
 
