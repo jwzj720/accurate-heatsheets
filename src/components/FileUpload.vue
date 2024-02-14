@@ -39,6 +39,7 @@ export default {
         document.cookie = `filename=${filename}; path=/`;
         this.isLoading = false;
         this.uploadMessage = 'File uploaded successfully!'; // Set the success message
+        this.pollForFileReady(filename);
       })
       .catch(() => {
         console.log('FAILURE!');
