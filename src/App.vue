@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="container">
     <h1 class="title">Accurate Heat Sheets</h1>
-    
+    <how-to></how-to>
     <section class="upload-section">
       <file-upload></file-upload>
     </section>
@@ -15,12 +15,14 @@
 <script>
 import FileUpload from "./components/FileUpload.vue";
 import FileDownload from "./components/FileDownload.vue";
+import HowTo from "./components/HowTo.vue"; 
 
 export default {
   name: 'App',
   components: {
     FileUpload,
     FileDownload,
+    HowTo,
   }
 };
 </script>
